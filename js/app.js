@@ -120,7 +120,8 @@ const KPI_ROWS = [
 // ── Helpers ────────────────────────────────────────────────────────────
 
 function escapeHtml(str) {
-  return str
+  if (str == null) { return ''; }
+  return String(str)
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
@@ -155,7 +156,7 @@ function channelTags(text) {
   const lower = text.toLowerCase();
   const found = Object.entries(map)
     .filter(function (entry) { return lower.includes(entry[0]); })
-    .map(function (entry) { return '<span class="tag">' + entry[1] + '</span>'; });
+    .map(function (entry) { return '<span class="tag">' + escapeHtml(entry[1]) + '</span>'; });
 
   return found.length
     ? found.join('')
