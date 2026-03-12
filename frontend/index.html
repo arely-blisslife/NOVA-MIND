@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NOVA-MIND – Ingeniero de IA para Empresas</title>
+  <style>
+    :root {
+      --primary: #6C3FF5;
+      --primary-dark: #4B22D4;
+      --accent: #00D4B4;
+      --bg: #0A0B1E;
+      --surface: #12132B;
+      --surface2: #1A1C38;
+      --text: #E8E9FF;
+      --text-muted: #8889AA;
+      --alta: #FF5E5E;
+      --media: #FFB347;
+      --baja: #5ECC8A;
+      --bajo: #5ECC8A;
+      --medio: #FFB347;
+      --alto: #FF5E5E;
+      --radius: 12px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      min-height: 100vh;
+    }
+
+    /* ── NAV ── */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 2rem;
+      background: var(--surface);
+      border-bottom: 1px solid rgba(108,63,245,.3);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo { display: flex; align-items: center; gap: .6rem; font-size: 1.4rem; font-weight: 700; }
+    .logo span { color: var(--accent); }
+    nav a { color: var(--text-muted); text-decoration: none; font-size: .9rem; }
+    nav a:hover { color: var(--text); }
+
+    /* ── HERO ── */
+    .hero {
+      text-align: center;
+      padding: 5rem 2rem 3rem;
+      background: radial-gradient(ellipse at 50% 0%, rgba(108,63,245,.25) 0%, transparent 70%);
+    }
+    .hero-badge {
+      display: inline-block;
+      background: rgba(108,63,245,.2);
+      border: 1px solid var(--primary);
+      color: var(--primary);
+      border-radius: 20px;
+      padding: .25rem .9rem;
+      font-size: .8rem;
+      font-weight: 600;
+      letter-spacing: .05em;
+      margin-bottom: 1.5rem;
+    }
+    .hero h1 { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 800; line-height: 1.15; }
+    .hero h1 em { font-style: normal; color: var(--accent); }
+    .hero p { margin-top: 1.2rem; color: var(--text-muted); font-size: 1.1rem; max-width: 600px; margin-inline: auto; }
+
+    /* ── CANVAS FORM ── */
+    .section { max-width: 900px; margin: 3rem auto; padding: 0 1.5rem; }
+    .section h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: .5rem; }
+    .section .sub { color: var(--text-muted); font-size: .95rem; margin-bottom: 1.5rem; }
+
+    .canvas-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1rem;
+    }
+    .canvas-block {
+      background: var(--surface);
+      border: 1px solid rgba(108,63,245,.2);
+      border-radius: var(--radius);
+      padding: 1rem;
+      transition: border-color .2s;
+    }
+    .canvas-block:focus-within { border-color: var(--primary); }
+    .canvas-block label {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      font-size: .8rem;
+      font-weight: 700;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: .6rem;
+    }
+    .canvas-block label .num {
+      background: rgba(0,212,180,.15);
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .75rem;
+      color: var(--accent);
+    }
+    .canvas-block textarea {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 8px;
+      color: var(--text);
+      font-size: .9rem;
+      padding: .6rem .8rem;
+      resize: vertical;
+      min-height: 80px;
+      outline: none;
+      font-family: inherit;
+    }
+    .canvas-block textarea:focus { border-color: var(--primary); }
+    .canvas-block .hint { font-size: .75rem; color: var(--text-muted); margin-top: .4rem; }
+
+    .form-header {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    .form-header input {
+      background: var(--surface);
+      border: 1px solid rgba(108,63,245,.2);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-size: .95rem;
+      padding: .8rem 1rem;
+      outline: none;
+      font-family: inherit;
+      width: 100%;
+    }
+    .form-header input:focus { border-color: var(--primary); }
+    .form-header input::placeholder { color: var(--text-muted); }
+
+    .btn-analyze {
+      display: block;
+      width: 100%;
+      margin-top: 1.5rem;
+      padding: 1rem;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: #fff;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 1.05rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity .2s, transform .1s;
+    }
+    .btn-analyze:hover { opacity: .9; }
+    .btn-analyze:active { transform: scale(.98); }
+    .btn-analyze:disabled { opacity: .5; cursor: default; }
+
+    /* ── COMPLETENESS ── */
+    .completeness-bar {
+      background: var(--surface);
+      border: 1px solid rgba(108,63,245,.2);
+      border-radius: var(--radius);
+      padding: 1.2rem;
+      margin-bottom: 1.5rem;
+    }
+    .completeness-bar .label { display: flex; justify-content: space-between; font-size: .85rem; margin-bottom: .5rem; }
+    .completeness-bar .label strong { color: var(--accent); }
+    .bar-track { background: var(--surface2); border-radius: 20px; height: 10px; overflow: hidden; }
+    .bar-fill { height: 100%; border-radius: 20px; background: linear-gradient(90deg, var(--primary), var(--accent)); transition: width .6s ease; }
+    .incomplete-tags { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: .8rem; }
+    .tag {
+      background: rgba(255,94,94,.1);
+      border: 1px solid rgba(255,94,94,.3);
+      color: #FF5E5E;
+      border-radius: 20px;
+      padding: .2rem .7rem;
+      font-size: .75rem;
+    }
+
+    /* ── RESULTS ── */
+    .results-tabs {
+      display: flex;
+      gap: .5rem;
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    .tab-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      padding: .6rem 1.2rem;
+      cursor: pointer;
+      font-size: .95rem;
+      font-family: inherit;
+      border-bottom: 2px solid transparent;
+      transition: color .2s;
+    }
+    .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1rem;
+    }
+    .card {
+      background: var(--surface);
+      border: 1px solid rgba(108,63,245,.15);
+      border-radius: var(--radius);
+      padding: 1.2rem;
+      transition: border-color .2s, transform .15s;
+    }
+    .card:hover { border-color: var(--primary); transform: translateY(-2px); }
+    .card-header { display: flex; align-items: flex-start; justify-content: space-between; gap: .5rem; margin-bottom: .7rem; }
+    .card-title { font-weight: 700; font-size: 1rem; line-height: 1.35; }
+    .badge {
+      border-radius: 20px;
+      padding: .15rem .6rem;
+      font-size: .72rem;
+      font-weight: 700;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .badge-alta, .badge-alto { background: rgba(255,94,94,.15); color: var(--alta); border: 1px solid rgba(255,94,94,.3); }
+    .badge-media, .badge-medio { background: rgba(255,179,71,.15); color: var(--media); border: 1px solid rgba(255,179,71,.3); }
+    .badge-baja, .badge-bajo { background: rgba(94,204,138,.15); color: var(--baja); border: 1px solid rgba(94,204,138,.3); }
+    .card-block { font-size: .75rem; color: var(--primary); font-weight: 600; margin-bottom: .5rem; }
+    .card-desc { font-size: .88rem; color: var(--text-muted); line-height: 1.6; }
+    .card-roi { margin-top: .7rem; padding: .4rem .7rem; background: rgba(0,212,180,.08); border-radius: 8px; font-size: .8rem; color: var(--accent); }
+    .card-tech { margin-top: .4rem; font-size: .78rem; color: var(--text-muted); }
+    .card-tech strong { color: var(--text); }
+    .impact-tags { display: flex; flex-wrap: wrap; gap: .3rem; margin-top: .7rem; }
+    .impact-tag {
+      background: rgba(108,63,245,.15);
+      color: var(--primary);
+      border-radius: 20px;
+      padding: .15rem .55rem;
+      font-size: .72rem;
+    }
+    .steps-list { margin-top: .7rem; padding-left: 1rem; }
+    .steps-list li { font-size: .8rem; color: var(--text-muted); line-height: 1.7; }
+    details summary { cursor: pointer; font-size: .8rem; color: var(--primary); margin-top: .6rem; }
+    details summary:hover { color: var(--accent); }
+
+    /* ── LOADING ── */
+    .spinner {
+      display: none;
+      text-align: center;
+      padding: 3rem;
+    }
+    .spinner-ring {
+      width: 48px; height: 48px;
+      border: 4px solid rgba(108,63,245,.2);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin .8s linear infinite;
+      margin: 0 auto 1rem;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── HIDDEN / VISIBLE ── */
+    .hidden { display: none !important; }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align: center;
+      padding: 2rem;
+      color: var(--text-muted);
+      font-size: .8rem;
+      border-top: 1px solid rgba(255,255,255,.06);
+      margin-top: 4rem;
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">⚡ NOVA-<span>MIND</span></div>
+  <a href="/docs" target="_blank">API Docs</a>
+</nav>
+
+<div class="hero">
+  <div class="hero-badge">🤖 Ingeniero de IA para Empresas</div>
+  <h1>Explota el <em>máximo potencial</em><br>de tu empresa con IA</h1>
+  <p>Analiza tu Modelo de Negocio, obtén estrategias personalizadas y descubre automatizaciones que transformarán tu empresa.</p>
+</div>
+
+<!-- CANVAS FORM -->
+<div class="section">
+  <h2>Modelo de Negocio de tu Empresa</h2>
+  <p class="sub">Completa los 9 bloques del Business Model Canvas. Entre más detallado, mejores recomendaciones.</p>
+
+  <div class="form-header">
+    <input type="text" id="company_name" placeholder="Nombre de la empresa" />
+    <input type="text" id="industry" placeholder="Industria (ej. retail, salud, fintech)" />
+  </div>
+
+  <div class="canvas-grid" id="canvasForm">
+    <div class="canvas-block">
+      <label><span class="num">1</span>Segmentos de Clientes</label>
+      <textarea id="customer_segments" placeholder="¿A quién ayudas? Describe tus clientes principales."></textarea>
+      <div class="hint">Ej: PyMEs del sector retail, mujeres 25-45 años, empresas B2B</div>
+    </div>
+    <div class="canvas-block">
+      <label><span class="num">2</span>Propuesta de Valor</label>
+      <textarea id="value_propositions" placeholder="¿Qué problema resuelves? ¿Qué valor ofreces?"></textarea>
+      <div class="hint">Ej: Reducimos costos operativos 30%, entrega en 24h</div>
+    </div>
+    <div class="canvas-block">
+      <label><span class="num">3</span>Canales</label>
+      <textarea id="channels" placeholder="¿Cómo llegas a tus clientes?"></textarea>
+      <div class="hint">Ej: Tienda online, fuerza de ventas, redes sociales, distribuidores</div>
+    </div>
+    <div class="canvas-block">
+      <label><span class="num">4</span>Relaciones con Clientes</label>
+      <textarea id="customer_relationships" placeholder="¿Cómo mantienes la relación con tus clientes?"></textarea>
+      <div class="hint">Ej: Soporte 24/7, comunidad, asistente personal, autoservicio</div>
+    </div>
+    <div class="canvas-block">
+      <label><span class="num">5</span>Fuentes de Ingresos</label>
+      <textarea id="revenue_streams" placeholder="¿Cómo generas ingresos?"></textarea>
+      <div class="hint">Ej: Suscripción mensual, venta única, comisión, licencias</div>
+    </div>
+    <div class="canvas-block">
+      <label><span class="num">6</span>Recursos Clave</label>
+      <textarea id="key_resources" placeholder="¿Qué activos son indispensables?"></textarea>
+      <div class="hint">Ej: Plataforma tecnológica, equipo de desarrollo, patentes, datos</div>
+    </div>
+    <div class="canvas-block">
+      <label><span class="num">7</span>Actividades Clave</label>
+      <textarea id="key_activities" placeholder="¿Qué procesos son críticos para tu modelo?"></textarea>
+      <div class="hint">Ej: Desarrollo de producto, marketing de contenido, logística</div>
+    </div>
+    <div class="canvas-block">
+      <label><span class="num">8</span>Socios Clave</label>
+      <textarea id="key_partnerships" placeholder="¿Con quién colaboras para operar?"></textarea>
+      <div class="hint">Ej: Proveedores, aliados tecnológicos, distribuidores, inversores</div>
+    </div>
+    <div class="canvas-block">
+      <label><span class="num">9</span>Estructura de Costos</label>
+      <textarea id="cost_structure" placeholder="¿Cuáles son tus principales costos?"></textarea>
+      <div class="hint">Ej: Nómina, infraestructura cloud, marketing, logística</div>
+    </div>
+  </div>
+
+  <button class="btn-analyze" id="analyzeBtn" onclick="analyzeCanvas()">
+    🚀 Analizar con IA y Obtener Estrategias
+  </button>
+</div>
+
+<!-- LOADING -->
+<div class="spinner" id="spinner">
+  <div class="spinner-ring"></div>
+  <p style="color:var(--text-muted)">Analizando tu empresa con IA...</p>
+</div>
+
+<!-- RESULTS -->
+<div class="section hidden" id="results">
+  <h2>Resultados del Análisis</h2>
+
+  <!-- Completeness -->
+  <div class="completeness-bar" id="completenessSection">
+    <div class="label">
+      <span>Completitud del Canvas</span>
+      <strong id="completenessScore">0%</strong>
+    </div>
+    <div class="bar-track"><div class="bar-fill" id="completenessBar" style="width:0%"></div></div>
+    <div class="incomplete-tags" id="incompleteTags"></div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="results-tabs">
+    <button class="tab-btn active" onclick="showTab(this, 'strategies')">📊 Estrategias (<span id="stratCount">0</span>)</button>
+    <button class="tab-btn" onclick="showTab(this, 'automations')">⚙️ Automatizaciones (<span id="autoCount">0</span>)</button>
+  </div>
+
+  <div id="strategiesPanel" class="cards-grid"></div>
+  <div id="automationsPanel" class="cards-grid hidden"></div>
+</div>
+
+<footer>
+  ⚡ NOVA-MIND v0.1.0 &nbsp;·&nbsp; Ingeniero de IA para Empresas &nbsp;·&nbsp;
+  Basado en el Business Model Canvas
+</footer>
+
+<script>
+  function parseTextareaToList(id) {
+    const val = document.getElementById(id).value.trim();
+    if (!val) return [];
+    return val.split('\n').map(s => s.trim()).filter(Boolean);
+  }
+
+  async function analyzeCanvas() {
+    const btn = document.getElementById('analyzeBtn');
+    btn.disabled = true;
+    document.getElementById('spinner').style.display = 'block';
+    document.getElementById('results').classList.add('hidden');
+
+    const payload = {
+      company_name: document.getElementById('company_name').value.trim() || null,
+      industry: document.getElementById('industry').value.trim() || null,
+      customer_segments: parseTextareaToList('customer_segments'),
+      value_propositions: parseTextareaToList('value_propositions'),
+      channels: parseTextareaToList('channels'),
+      customer_relationships: parseTextareaToList('customer_relationships'),
+      revenue_streams: parseTextareaToList('revenue_streams'),
+      key_resources: parseTextareaToList('key_resources'),
+      key_activities: parseTextareaToList('key_activities'),
+      key_partnerships: parseTextareaToList('key_partnerships'),
+      cost_structure: parseTextareaToList('cost_structure'),
+    };
+
+    try {
+      const res = await fetch('/api/canvas/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) throw new Error('Error en el servidor');
+      const data = await res.json();
+      renderResults(data);
+    } catch (err) {
+      alert('Error al analizar: ' + err.message);
+    } finally {
+      btn.disabled = false;
+      document.getElementById('spinner').style.display = 'none';
+    }
+  }
+
+  function renderResults(data) {
+    // Completeness
+    const pct = data.canvas_completeness;
+    document.getElementById('completenessScore').textContent = pct + '%';
+    document.getElementById('completenessBar').style.width = pct + '%';
+
+    const tagsEl = document.getElementById('incompleteTags');
+    tagsEl.innerHTML = '';
+    (data.incomplete_blocks || []).forEach(b => {
+      const tag = document.createElement('span');
+      tag.className = 'tag';
+      tag.textContent = '⚠ ' + b;
+      tagsEl.appendChild(tag);
+    });
+
+    // Strategy cards
+    document.getElementById('stratCount').textContent = data.strategies.length;
+    const stratPanel = document.getElementById('strategiesPanel');
+    stratPanel.innerHTML = '';
+    data.strategies.forEach(s => {
+      stratPanel.innerHTML += `
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">${s.title}</div>
+            <span class="badge badge-${s.priority}">${s.priority.toUpperCase()}</span>
+          </div>
+          <div class="card-block">📌 ${s.block}</div>
+          <div class="card-desc">${s.description}</div>
+          <div class="impact-tags">${s.impact_areas.map(a => `<span class="impact-tag">${a}</span>`).join('')}</div>
+        </div>`;
+    });
+
+    // Automation cards
+    document.getElementById('autoCount').textContent = data.automations.length;
+    const autoPanel = document.getElementById('automationsPanel');
+    autoPanel.innerHTML = '';
+    data.automations.forEach(a => {
+      const stepsHtml = a.steps.map(s => `<li>${s}</li>`).join('');
+      autoPanel.innerHTML += `
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">${a.title}</div>
+            <span class="badge badge-${a.effort}">${a.effort.toUpperCase()}</span>
+          </div>
+          <div class="card-block">⚙️ ${a.process}</div>
+          <div class="card-desc">${a.description}</div>
+          <div class="card-tech"><strong>Tecnología:</strong> ${a.technology}</div>
+          <div class="card-roi">📈 ${a.roi_estimate}</div>
+          <details>
+            <summary>Ver pasos de implementación</summary>
+            <ol class="steps-list">${stepsHtml}</ol>
+          </details>
+        </div>`;
+    });
+
+    document.getElementById('results').classList.remove('hidden');
+    document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  function showTab(btn, tab) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('strategiesPanel').classList.toggle('hidden', tab !== 'strategies');
+    document.getElementById('automationsPanel').classList.toggle('hidden', tab !== 'automations');
+  }
+</script>
+</body>
+</html>
