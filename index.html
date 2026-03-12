@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NOVA-MIND | Estrategia Digital &amp; Automatización</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header>
+    <div class="container">
+      <div class="brand">
+        <span class="brand-icon">🧠</span>
+        <h1>NOVA-MIND</h1>
+      </div>
+      <p class="brand-tagline">Estrategia Digital &amp; Automatización de Contenido</p>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="intro-section">
+      <h2>Construye tu Estrategia con los 9 Bloques del Modelo de Negocio</h2>
+      <p>Completa los 9 bloques base de tu empresa para generar estrategias digitales
+        personalizadas y planes de automatización de contenido.</p>
+    </section>
+
+    <!-- ── Business Model Canvas ─────────────────────────────────────── -->
+    <div class="canvas-form" id="businessCanvas">
+      <h3 class="section-title">📋 Business Model Canvas</h3>
+
+      <div class="canvas-grid">
+        <!-- 1 Socios Clave -->
+        <div class="canvas-block" data-block="socios">
+          <div class="block-header">
+            <span class="block-number">1</span>
+            <h4>🤝 Socios Clave</h4>
+          </div>
+          <textarea id="socios"
+            placeholder="¿Quiénes son tus socios y proveedores clave? ¿Qué actividades realizan tus socios?"></textarea>
+        </div>
+
+        <!-- 2 Actividades Clave -->
+        <div class="canvas-block" data-block="actividades">
+          <div class="block-header">
+            <span class="block-number">2</span>
+            <h4>⚙️ Actividades Clave</h4>
+          </div>
+          <textarea id="actividades"
+            placeholder="¿Qué actividades clave requiere tu propuesta de valor? ¿Canales de distribución? ¿Relaciones con clientes?"></textarea>
+        </div>
+
+        <!-- 3 Recursos Clave -->
+        <div class="canvas-block" data-block="recursos">
+          <div class="block-header">
+            <span class="block-number">3</span>
+            <h4>💎 Recursos Clave</h4>
+          </div>
+          <textarea id="recursos"
+            placeholder="¿Qué recursos clave requiere tu propuesta de valor? ¿Físicos, intelectuales, humanos, financieros?"></textarea>
+        </div>
+
+        <!-- 4 Propuesta de Valor (featured) -->
+        <div class="canvas-block featured" data-block="propuesta">
+          <div class="block-header">
+            <span class="block-number">4</span>
+            <h4>💡 Propuesta de Valor</h4>
+          </div>
+          <textarea id="propuesta"
+            placeholder="¿Qué valor entregas al cliente? ¿Qué problema resuelves? ¿Qué necesidades satisfaces?"></textarea>
+        </div>
+
+        <!-- 5 Relaciones con Clientes -->
+        <div class="canvas-block" data-block="relaciones">
+          <div class="block-header">
+            <span class="block-number">5</span>
+            <h4>❤️ Relaciones con Clientes</h4>
+          </div>
+          <textarea id="relaciones"
+            placeholder="¿Qué tipo de relación estableces con cada segmento? ¿Personal, automatizada, comunidad?"></textarea>
+        </div>
+
+        <!-- 6 Segmentos de Clientes -->
+        <div class="canvas-block" data-block="segmentos">
+          <div class="block-header">
+            <span class="block-number">6</span>
+            <h4>👥 Segmentos de Clientes</h4>
+          </div>
+          <textarea id="segmentos"
+            placeholder="¿Para quién creas valor? ¿Quiénes son tus clientes más importantes? Define tu nicho."></textarea>
+        </div>
+
+        <!-- 7 Canales -->
+        <div class="canvas-block" data-block="canales">
+          <div class="block-header">
+            <span class="block-number">7</span>
+            <h4>📢 Canales</h4>
+          </div>
+          <textarea id="canales"
+            placeholder="¿A través de qué canales llegas a tus segmentos? ¿Redes sociales, web, email, eventos?"></textarea>
+        </div>
+
+        <!-- 8 Fuentes de Ingresos -->
+        <div class="canvas-block" data-block="ingresos">
+          <div class="block-header">
+            <span class="block-number">8</span>
+            <h4>💰 Fuentes de Ingresos</h4>
+          </div>
+          <textarea id="ingresos"
+            placeholder="¿Por qué valor están dispuestos a pagar tus clientes? ¿Suscripción, venta directa, comisiones?"></textarea>
+        </div>
+
+        <!-- 9 Estructura de Costos -->
+        <div class="canvas-block" data-block="costos">
+          <div class="block-header">
+            <span class="block-number">9</span>
+            <h4>📊 Estructura de Costos</h4>
+          </div>
+          <textarea id="costos"
+            placeholder="¿Cuáles son los costos más importantes de tu modelo? ¿Cuáles recursos y actividades son más costosos?"></textarea>
+        </div>
+      </div>
+
+      <button class="generate-btn" id="generateBtn" onclick="generateStrategy()">
+        🚀 Generar Estrategia Digital
+      </button>
+    </div>
+
+    <!-- ── Strategy Output ────────────────────────────────────────────── -->
+    <div class="strategy-output" id="strategyOutput" style="display:none;">
+      <h3 class="section-title">🎯 Tu Estrategia Digital Personalizada</h3>
+
+      <div class="strategy-tabs">
+        <button class="tab-btn active" data-tab="content"    onclick="showTab(event,'content')">📝 Estrategia de Contenido</button>
+        <button class="tab-btn"         data-tab="automation" onclick="showTab(event,'automation')">🤖 Automatización</button>
+        <button class="tab-btn"         data-tab="calendar"   onclick="showTab(event,'calendar')">📅 Calendario</button>
+        <button class="tab-btn"         data-tab="kpis"       onclick="showTab(event,'kpis')">📈 KPIs</button>
+      </div>
+
+      <div class="tab-content active" id="content-tab">
+        <div id="contentStrategy"></div>
+      </div>
+      <div class="tab-content" id="automation-tab">
+        <div id="automationStrategy"></div>
+      </div>
+      <div class="tab-content" id="calendar-tab">
+        <div id="calendarStrategy"></div>
+      </div>
+      <div class="tab-content" id="kpis-tab">
+        <div id="kpisStrategy"></div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>🧠 NOVA-MIND &mdash; Estrategia Digital &amp; Automatización de Contenido</p>
+      <p>Guiado por los 9 bloques del Business Model Canvas</p>
+    </div>
+  </footer>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
